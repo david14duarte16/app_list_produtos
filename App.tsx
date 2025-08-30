@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 
 interface Produto {
   id: number;
@@ -26,23 +26,26 @@ export default function App() {
   }, []); // O array vazio garante que isso só aconteça uma vez, ao montar o componente
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       {/* Mapeando e renderizando os produtos */}
-      {listProdutos.map((prod) => (
+      {listProdutos.map((prod) => 
         <View style={styles.listItem} key={prod.id}>
-          {/* Exibindo a imagem do produto */}
-          <Image
-            source={{ uri: prod.image }} // A URL da imagem
-            style={styles.productImage}
-          />
-          <View style={styles.textContainer}>
-            <Text>{prod.title}</Text>
-            <Text>R$ {prod.price.toFixed(2)}</Text> {/* Formata o preço */}
-          </View>
+
+          <Image source={{ uri: prod.image }} style={styles.image} />
+          <Text style={styles.titulo}>{prod.title}</Text>
+          <Text style={styles.preco}>{
+            prod.price.toLocaleString('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL' 
+              })
+          }</Text>
+          
         </View>
-      ))}
+      )}
       <StatusBar style="auto" />
     </View>
+    </ScrollView>
   );
 }
 
@@ -56,15 +59,27 @@ const styles = StyleSheet.create({
   listItem: {
     margin: 10,
     flexDirection: 'row',
-    alignItems: 'center',  // Ajustei o alinhamento para exibir bem a imagem e o texto
+    alignItems: 'flex-start',
     padding: 10,
+    flexWrap: 'wrap', // Permite que o conteúdo quebre linha se necessário
+    borderRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
   },
-  productImage: {
-    width: 100, // Tamanho da imagem (pode ajustar conforme necessário)
-    height: 100,
-    marginRight: 10, // Espaçamento entre imagem e texto
+  image: {
+    width: 50,
+    height: 50,
   },
-  textContainer: {
-    flexDirection: 'column',  // Para exibir o título e preço um abaixo do outro
+  titulo: {
+    width: '50%', // Limita a largura do título para evitar overflow
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  preco: {
+    fontSize: 14,
+    marginTop: 10,
   },
 });
